@@ -122,6 +122,12 @@ class EntryHandler(BaseHandler):
         self.render("entry.html", entry=entry)
 
 
+class TagHandler(BaseHandler):
+    def get(self, tag):
+        entries = db.Query(Entry).filter("tags =", tag).order("-published")
+        self.render("tag.html", entries=entries, tag=tag)
+
+
 class EntryModule(tornado.web.UIModule):
     def render(self, entry, show_comments=False):
         self.show_comments = show_comments
@@ -162,6 +168,7 @@ application = tornado.wsgi.WSGIApplication([
     (r"/archive", ArchiveHandler),
     (r"/compose", ComposeHandler),
     (r"/e/([\w-]+)", EntryHandler),
+    (r"/t/([\w-]+)", TagHandler),
 ], **settings)
 
 def main():

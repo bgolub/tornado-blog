@@ -2,15 +2,23 @@
   <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
   <div class="date">{{ locale.format_date(entry.published, full_format=True, shorter=True) }}</div>
   <div class="body">{{ entry.body }}</div>
+  {% if entry.tags %}
+    <div class="tags">
+      Tagged:
+      {% for tag in entry.tags %}
+        <a href="/t/{{ tag }}">{{ escape(tag) }}</a>
+      {% end %}
+    </div>
+  {% end %}
   {% if not show_comments %}
-    <div>
+    <div class="comments">
       <a href="/entry/{{ entry.slug }}#disqus_thread">Comments</a>
     </div>
   {% else %}
     <div id="disqus_thread"></div>
   {% end %}
   {% if current_user and current_user.administrator %}
-    <div style="margin-top: 10px;">
+    <div style="margin-top: 5px;">
       <a href="/compose?key={{ str(entry.key()) }}">{{ _("Edit") }}</a>
     </div>
   {% end %}

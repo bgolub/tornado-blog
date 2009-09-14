@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ escape(tag) }} - {{ escape(handler.settings["blog_title"]) }}{% end %}
+
+{% block content %}
+  <h2>{{ escape(tag) }}</h2>
+  <ul>
+    {% for entry in entries %}
+      <li>
+        <a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a>
+      </li>
+    {% end %}
+  </ul>
+{% end %}
