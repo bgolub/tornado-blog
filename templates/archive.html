@@ -2,6 +2,11 @@
 
 {% block title %}{{ _("Archive") }} - {{ escape(handler.settings["blog_title"]) }}{% end %}
 
+{% block head %}
+  <link rel="alternate" type="application/atom+xml" href="{{ request.path }}?format=atom" title="{{ _("Archive") }} - {{ escape(handler.settings["blog_title"]) }}"/>
+{% end %}
+
+
 {% block content %}
   <h2>{{ _("Archive") }}</h2>
   <ul>

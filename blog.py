@@ -9,6 +9,9 @@ import wsgiref.handlers
 from google.appengine.api import users
 from google.appengine.ext import db
 
+from django.utils import feedgenerator
+
+
 class Entry(db.Model):
     author = db.UserProperty()
     title = db.StringProperty(required=True)
@@ -50,6 +53,30 @@ class BaseHandler(tornado.web.RequestHandler):
     def render_string(self, template_name, **kwargs):
         return tornado.web.RequestHandler.render_string(self, template_name,
             users=users, **kwargs)
+
+    def render(self, template_name, **kwargs):
+        format = self.get_argument("format", None)
+        if "entries" in kwargs and format == "atom":
+            feed = feedgenerator.Atom1Feed(
+                title=self.application.settings["blog_title"],
+                description=self.application.settings["blog_title"],
+                link=self.request.path,
+                language="en",
+            )
+            for entry in kwargs["entries"]:
+                feed.add_item(
+                    title=entry.title,
+                    link="http://" + self.request.host + "/e/" + entry.slug,
+                    description=entry.body,
+                    author_name=entry.author.nickname(),
+                    pubdate=entry.published,
+                    categories=entry.tags,
+                )
+            data = feed.writeString("utf-8")
+            self.set_header("Content-Type", "application/atom+xml")
+            self.write(data)
+            return
+        return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
 
 class HomeHandler(BaseHandler):

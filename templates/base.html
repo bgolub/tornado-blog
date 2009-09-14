@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
     <title>{% block title %}{{ escape(handler.settings["blog_title"]) }}{% end %}</title>
     <link rel="stylesheet" href="/static/css/base.css" type="text/css"/>
+    <link rel="alternate" href="/?format=atom" type="application/atom+xml" title="{{ escape(handler.settings["blog_title"]) }}"/>
     {% block head %}{% end %}
   </head>
   <body>
