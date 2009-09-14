@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+    <title>{% block title %}{{ escape(handler.settings["blog_title"]) }}{% end %}</title>
+    <link rel="stylesheet" href="/static/css/base.css" type="text/css"/>
+    {% block head %}{% end %}
+  </head>
+  <body>
+    <div id="header">
+      <div class="title">
+        <a href="/">{{ escape(handler.settings["blog_title"]) }}</a>
+      </div>
+    </div>
+    <table>
+      <tr>
+        <td id="content">
+          {% block content %}{% end %}
+        </td>
+        <td id="sidebar">
+          <div class="box">
+            <h3>{{ _("Links") }}</h3>
+            <ul>
+              <li><a href="/archive">{{ _("Archive") }}</a></li>
+              <li><a href="mailto:benjamin.golub@gmail.com">{{ _("Email") }}</a>
+              <li><a href="http://facebook.com/bgolub">{{ _("Facebook") }}</a>
+              <li><a href="http://friendfeed.com/bgolub">{{ _("FriendFeed") }}</a>
+            </ul>
+          </div>
+          {{ modules.RecentEntries() }}
+        </td>
+      </tr>
+    </table>
+    <div id="footer">
+      &copy;{{ datetime.datetime.utcnow().year }} Benjamin Golub
+      - <a href="/about">About me</a>
+      - <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons license</a>
+      -
+      {% if current_user %}
+        <a href="{{ users.create_logout_url(request.uri) }}">{{ _("Sign out") }}</a>
+      {% else %}
+        <a href="{{ users.create_login_url(request.uri) }}">{{ _("Sign in") }}</a>
+      {% end %}
+    </div>
+    {% block bottom %}{% end %}
+    {% if not handler.settings.get("debug") %}
+      <script type="text/javascript">
+        document.write(unescape("%3Cscript src='" + ((document.location.protocol == "https:") ? "https://ssl." : "http://www.") + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+      //<![CDATA[
+
+        try {
+          var pageTracker = _gat._getTracker("UA-1337900-1");
+          pageTracker._trackPageview();
+        } catch(e) {}
+
+      //]]>
+      </script>
+    {% end %}
+  </body>
+</html>

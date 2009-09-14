@@ -1,0 +1,10 @@
+<div class="box">
+  <h3>{{ _("Recent Entries") }}</h3>
+  <ul>
+    {% for entry in entries %}
+      <li>
+        <a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a>
+      </li>
+    {% end %}
+  </ul>
+</div>

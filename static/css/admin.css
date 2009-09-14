@@ -1,0 +1,22 @@
+.compose .field {
+  margin-bottom: 5px;
+}
+
+.compose .title,
+.compose .submit {
+  font-weight: bold;
+}
+
+.compose .title {
+  font-size: 20pt;
+}
+
+.compose .title,
+.compose .body {
+  width: 100%;
+}
+
+.compose .body {
+  height: 500px;
+  line-height: 16pt;
+}
