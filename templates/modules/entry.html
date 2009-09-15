@@ -1,6 +1,11 @@
 <div class="entry">
   <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
-  <div class="date">{{ locale.format_date(entry.published, full_format=True, shorter=True) }}</div>
+  <div style="float: right">
+    <a style="margin-left: 5px;" class="retweet" href="/e/{{ entry.slug }}" title="{{ escape(entry.title) }}"></a> 
+  </div>
+  <div class="date">
+    {{ locale.format_date(entry.published, full_format=True, shorter=True) }}
+  </div>
   <div class="body">{{ entry.body }}</div>
   {% if entry.tags %}
     <div class="tags">
