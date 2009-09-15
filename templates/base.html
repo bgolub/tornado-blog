@@ -29,12 +29,18 @@
             </ul>
           </div>
           {{ modules.RecentEntries() }}
+          <div class="box" style="color: gray; font-size: 8pt;">
+              The opinions expressed on this site are mine and do not
+              necessarily represent those of my employer. You won't find any
+              confidential company information here, and while you're welcome
+              to get in touch with me, I'm afraid I can't put you in contact
+              with my employer.
+          </div>
         </td>
       </tr>
     </table>
     <div id="footer">
       &copy;{{ datetime.datetime.utcnow().year }} Benjamin Golub
-      - <a href="/about">About me</a>
       - <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons license</a>
       -
       {% if current_user %}
