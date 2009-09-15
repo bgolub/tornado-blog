@@ -4,6 +4,7 @@ import re
 import tornado.web
 import tornado.wsgi
 import unicodedata
+import uuid
 import wsgiref.handlers
 
 from google.appengine.api import users
