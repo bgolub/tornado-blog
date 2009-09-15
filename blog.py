@@ -1,12 +1,15 @@
 import functools
+import hashlib
 import os.path
 import re
 import tornado.web
 import tornado.wsgi
 import unicodedata
+import urllib
 import uuid
 import wsgiref.handlers
 
+from google.appengine.api import urlfetch
 from google.appengine.api import users
 from google.appengine.ext import db
 
@@ -75,6 +78,9 @@ class BaseHandler(tornado.web.RequestHandler):
                 )
             data = feed.writeString("utf-8")
             self.set_header("Content-Type", "application/atom+xml")
+            sup_id = self.generate_sup_id()
+            self.set_header("X-SUP-ID",
+                "http://friendfeed.com/api/public-sup.json#" + sup_id) 
             self.write(data)
             return
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
@@ -84,6 +90,27 @@ class BaseHandler(tornado.web.RequestHandler):
             "ascii", "ignore")
         slug = re.sub(r"[^\w]+", " ", slug)
         return "-".join(slug.lower().strip().split())
+
+    def generate_sup_id(self, url=None):
+        return hashlib.md5(url or self.request.full_url()).hexdigest()[:10]
+
+    def ping(self):
+        feed = "http://" + self.request.host + "/?format=atom"
+        args = urllib.urlencode({
+            "name": self.application.settings["blog_title"],
+            "url": "http://" + self.request.host + "/",
+            "changesURL": feed,
+        })
+        urlfetch.fetch("http://blogsearch.google.com/ping?" + args)
+        args = urllib.urlencode({
+            "url": feed,
+            "supid": self.generate_sup_id(feed),
+        })
+        urlfetch.fetch("http://friendfeed.com/api/public-sup-ping?" + args)
+        args = urllib.urlencode({
+            "bloglink": "http://" + self.request.host + "/",
+        })
+        urlfetch.fetch("http://www.feedburner.com/fb/a/pingSubmit?" + args)
 
 
 class HomeHandler(BaseHandler):
@@ -147,6 +174,8 @@ class ComposeHandler(BaseHandler):
         if tags:
             entry.tags = tags
         entry.put()
+        if not key:
+            self.ping()
         self.redirect("/e/" + entry.slug)
 
 
