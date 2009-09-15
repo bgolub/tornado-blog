@@ -79,6 +79,12 @@ class BaseHandler(tornado.web.RequestHandler):
             return
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
+    def slugify(self, value):
+        slug = unicodedata.normalize("NFKD", value).encode(
+            "ascii", "ignore")
+        slug = re.sub(r"[^\w]+", " ", slug)
+        return "-".join(slug.lower().strip().split())
+
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -119,14 +125,11 @@ class ComposeHandler(BaseHandler):
             except db.BadKeyError:
                 self.redirect("/")
                 return
-            entry.title = self.get_argument("title")
             entry.body = self.get_argument("body")
+            entry.title = self.get_argument("title")
         else:
             title = self.get_argument("title")
-            slug = unicodedata.normalize("NFKD", title).encode(
-                "ascii", "ignore")
-            slug = re.sub(r"[^\w]+", " ", slug)
-            slug = "-".join(slug.lower().strip().split())
+            slug = self.slugify(title)
             if not slug:
                 slug = "entry"
             original_slug = slug
@@ -134,10 +137,15 @@ class ComposeHandler(BaseHandler):
                 slug = original_slug + "-" + uuid.uuid4().hex[:2]
             entry = Entry(
                 author=self.current_user,
-                title=title,
-                slug=slug,
                 body=self.get_argument("body"),
+                slug=slug,
+                title=title,
             )
+        tags = set([self.slugify(unicode(tag)) for tag in
+            self.get_argument("tags", "").split(",")])
+        tags = [db.Category(tag) for tag in tags if tag]
+        if tags:
+            entry.tags = tags
         entry.put()
         self.redirect("/e/" + entry.slug)
 

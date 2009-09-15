@@ -12,6 +12,7 @@
 }
 
 .compose .title,
+.compose .tags,
 .compose .body {
   width: 100%;
 }
