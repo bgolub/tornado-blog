@@ -112,6 +112,12 @@ class BaseHandler(tornado.web.RequestHandler):
         })
         urlfetch.fetch("http://www.feedburner.com/fb/a/pingSubmit?" + args)
 
+    def get_error_html(self, status_code):
+        if status_code == 404:
+            self.write(self.render_string("404.html"))
+        else:
+            return tornado.web.RequestHandler.get_error_html(self, status_code)
+
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -192,6 +198,10 @@ class TagHandler(BaseHandler):
         entries = db.Query(Entry).filter("tags =", tag).order("-published")
         self.render("tag.html", entries=entries, tag=tag)
 
+class CatchAllHandler(BaseHandler):
+    def get(self):
+        self.render("404.html")
+
 
 class EntryModule(tornado.web.UIModule):
     def render(self, entry, show_comments=False):
@@ -234,6 +244,7 @@ application = tornado.wsgi.WSGIApplication([
     (r"/compose", ComposeHandler),
     (r"/e/([\w-]+)", EntryHandler),
     (r"/t/([\w-]+)", TagHandler),
+    (r".*", CatchAllHandler),
 ], **settings)
 
 def main():
