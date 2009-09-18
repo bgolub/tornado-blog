@@ -78,9 +78,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 )
             data = feed.writeString("utf-8")
             self.set_header("Content-Type", "application/atom+xml")
-            sup_id = self.generate_sup_id()
-            self.set_header("X-SUP-ID",
-                "http://friendfeed.com/api/public-sup.json#" + sup_id) 
+            self.set_sup_header()
             self.write(data)
             return
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
@@ -93,6 +91,11 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def generate_sup_id(self, url=None):
         return hashlib.md5(url or self.request.full_url()).hexdigest()[:10]
+
+    def set_sup_header(self, url=None):
+        sup_id = self.generate_sup_id(url)
+        self.set_header("X-SUP-ID",
+            "http://friendfeed.com/api/public-sup.json#" + sup_id) 
 
     def ping(self):
         feed = "http://" + self.request.host + "/?format=atom"
@@ -118,8 +121,9 @@ class BaseHandler(tornado.web.RequestHandler):
         else:
             return tornado.web.RequestHandler.get_error_html(self, status_code)
 
-    def head(self):
-        pass
+    def head(self, *args):
+        if self.get_argument("format", None) == "atom":
+            self.set_sup_header()
 
 
 class HomeHandler(BaseHandler):
