@@ -1,6 +1,6 @@
 import functools
 import hashlib
-import os.path
+import os
 import re
 import tornado.web
 import tornado.wsgi
