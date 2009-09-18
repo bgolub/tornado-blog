@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block head %}
-  <link rel="stylesheet" href="/static/css/admin.css" type="text/css"/>
-{% end %}
-
 {% block content %}
   <form action="{{ request.path }}" method="post" class="compose">
     {{ xsrf_form_html() }}
