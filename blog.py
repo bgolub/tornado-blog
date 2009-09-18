@@ -118,6 +118,9 @@ class BaseHandler(tornado.web.RequestHandler):
         else:
             return tornado.web.RequestHandler.get_error_html(self, status_code)
 
+    def head(self):
+        pass
+
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -192,6 +195,11 @@ class EntryHandler(BaseHandler):
             raise tornado.web.HTTPError(404)
         self.render("entry.html", entry=entry)
 
+    def head(self, slug):
+        entry = db.Query(Entry).filter("slug =", slug).get()
+        if not entry:
+            raise tornado.web.HTTPError(404)
+
 
 class TagHandler(BaseHandler):
     def get(self, tag):
@@ -201,6 +209,9 @@ class TagHandler(BaseHandler):
 class CatchAllHandler(BaseHandler):
     def get(self):
         self.render("404.html")
+
+    def head(self):
+        self.set_status(404)
 
 
 class EntryModule(tornado.web.UIModule):
