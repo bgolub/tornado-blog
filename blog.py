@@ -140,6 +140,11 @@ class HomeHandler(BaseHandler):
             previous=previous) 
 
 
+class AboutHandler(BaseHandler):
+    def get(self):
+        self.render("about.html")
+
+
 class ArchiveHandler(BaseHandler):
     def get(self):
         entries = db.Query(Entry).order("-published")
@@ -212,6 +217,7 @@ class TagHandler(BaseHandler):
 
 class CatchAllHandler(BaseHandler):
     def get(self):
+        self.set_status(404)
         self.render("404.html")
 
     def head(self):
@@ -255,6 +261,7 @@ settings = {
 
 application = tornado.wsgi.WSGIApplication([
     (r"/", HomeHandler),
+    (r"/about", AboutHandler),
     (r"/archive", ArchiveHandler),
     (r"/compose", ComposeHandler),
     (r"/e/([\w-]+)", EntryHandler),

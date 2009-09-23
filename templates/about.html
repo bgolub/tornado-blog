@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _("About") }} - {{ escape(handler.settings["blog_title"]) }}{% end %}
+
+{% block content %}
+  <h2>{{ _("About") }}</h2>
+  <p>
+    {{ _('I am a Software Engineer at <a href="http://www.facebook.com/">Facebook</a>. Before Facebook I was a FriendFeeder (aka Software Engineer) at <a href="http://friendfeed.com/">FriendFeed</a> which was <a href="http://www.facebook.com/press/releases.php?p=116581">acquired</a> by Facebook. I live in Rochester, NY with my fiance and <a href="http://www.flickr.com/photos/benjamingolub/tags/loki">dog</a>.') }}
+  </p>
+  <p>
+    {{ _('Follow me on <a href="http://www.facebook.com/bgolub">Facebook</a> and <a href="http://friendfeed.com/bgolub">FriendFeed</a>. Or email me at <a href="mailto:benjamin.golub@gmail.com">benjamin.golub@gmail.com</a>.') }}
+  </p>
+{% end %}
