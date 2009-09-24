@@ -197,6 +197,27 @@ class ComposeHandler(BaseHandler):
         self.redirect("/e/" + entry.slug)
 
 
+class DeleteHandler(BaseHandler):
+    @administrator
+    def get(self):
+        key = self.get_argument("key")
+        try:
+            entry = Entry.get(key)
+        except db.BadKeyError:
+            raise tornado.web.HTTPError(404)
+        self.render("delete.html", entry=entry)
+
+    @administrator
+    def post(self):
+        key = self.get_argument("key")
+        try:
+            entry = Entry.get(key)
+        except db.BadKeyError:
+            raise tornado.web.HTTPError(404)
+        entry.delete()
+        self.redirect("/")
+
+
 class EntryHandler(BaseHandler):
     def get(self, slug):
         entry = db.Query(Entry).filter("slug =", slug).get()
@@ -264,6 +285,7 @@ application = tornado.wsgi.WSGIApplication([
     (r"/about", AboutHandler),
     (r"/archive", ArchiveHandler),
     (r"/compose", ComposeHandler),
+    (r"/delete", DeleteHandler),
     (r"/e/([\w-]+)", EntryHandler),
     (r"/t/([\w-]+)", TagHandler),
     (r".*", CatchAllHandler),

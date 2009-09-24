@@ -25,6 +25,7 @@
   {% if current_user and current_user.administrator %}
     <div style="margin-top: 5px;">
       <a href="/compose?key={{ str(entry.key()) }}">{{ _("Edit") }}</a>
+      <a href="/delete?key={{ str(entry.key()) }}">{{ _("Delete") }}</a>
     </div>
   {% end %}
 </div>
