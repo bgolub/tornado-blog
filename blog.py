@@ -137,16 +137,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        start = self.get_integer_argument("start", 0)
-        entries = db.Query(Entry).order("-published").fetch(limit=5,
-            offset=start)
-        if not entries and start > 0:
-            self.redirect("/")
-            return
-        next = max(start - 5, 0)
-        previous = start + 5 if len(entries) == 5 else None
-        self.render("home.html", entries=entries, start=start, next=next,
-            previous=previous) 
+        entries = db.Query(Entry).order("-published").fetch(limit=5)
+        self.recent_entries = entries
+        self.render("home.html", entries=entries)
 
 
 class AboutHandler(BaseHandler):
@@ -157,6 +150,7 @@ class AboutHandler(BaseHandler):
 class ArchiveHandler(BaseHandler):
     def get(self):
         entries = db.Query(Entry).order("-published")
+        self.recent_entries = entries[:5]
         self.render("archive.html", entries=entries)
 
 
@@ -280,7 +274,8 @@ class EntrySmallModule(tornado.web.UIModule):
 
 class RecentEntriesModule(tornado.web.UIModule):
     def render(self):
-        entries = db.Query(Entry).order("-published").fetch(limit=5)
+        entries = getattr(self.handler, "recent_entries", 
+            db.Query(Entry).order("-published").fetch(limit=5))
         return self.render_string("modules/recententries.html", entries=entries)
 
 
