@@ -104,16 +104,25 @@ class BaseHandler(tornado.web.RequestHandler):
             "url": "http://" + self.request.host + "/",
             "changesURL": feed,
         })
-        urlfetch.fetch("http://blogsearch.google.com/ping?" + args)
+        try:
+            urlfetch.fetch("http://blogsearch.google.com/ping?" + args)
+        except:
+            pass
         args = urllib.urlencode({
             "url": feed,
             "supid": self.generate_sup_id(feed),
         })
-        urlfetch.fetch("http://friendfeed.com/api/public-sup-ping?" + args)
+        try:
+            urlfetch.fetch("http://friendfeed.com/api/public-sup-ping?" + args)
+        except:
+            pass
         args = urllib.urlencode({
             "bloglink": "http://" + self.request.host + "/",
         })
-        urlfetch.fetch("http://www.feedburner.com/fb/a/pingSubmit?" + args)
+        try:
+            urlfetch.fetch("http://www.feedburner.com/fb/a/pingSubmit?" + args)
+        except:
+            pass
 
     def get_error_html(self, status_code):
         if status_code == 404:
@@ -270,7 +279,8 @@ class RecentEntriesModule(tornado.web.UIModule):
 
 
 settings = {
-    "blog_title": "Benjamin Golub's Blog",
+    "blog_author": "Benjamin Golub",
+    "blog_title": "Benjamin Golub",
     "debug": os.environ.get("SERVER_SOFTWARE", "").startswith("Development/"),
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "ui_modules": {

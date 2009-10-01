@@ -45,10 +45,14 @@
       </tr>
     </table>
     <div id="footer">
-      &copy;{{ datetime.datetime.utcnow().year }} Benjamin Golub
+      &copy;{{ datetime.datetime.utcnow().year }} {{ escape(handler.settings["blog_author"]) }}
       - <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons license</a>
       -
       {% if current_user %}
+        {% if current_user.administrator %}
+          <a href="/compose">{{ _("Compose") }}</a>
+          -
+        {% end %}
         <a href="{{ users.create_logout_url(request.uri) }}">{{ _("Sign out") }}</a>
       {% else %}
         <a href="{{ users.create_login_url(request.uri) }}">{{ _("Sign in") }}</a>
