@@ -11,8 +11,8 @@
   <h2>{{ _("Archive") }}</h2>
   <ul>
     {% for entry in entries %}
-      <li>
-        <a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a>
+      <li style="margin-bottom: 5px;">
+        {{ modules.EntrySmall(entry, show_date=True) }}
       </li>
     {% end %}
   </ul>

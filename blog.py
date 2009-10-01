@@ -272,6 +272,12 @@ class EntryModule(tornado.web.UIModule):
         return None
 
 
+class EntrySmallModule(tornado.web.UIModule):
+    def render(self, entry, show_date=False):
+        return self.render_string("modules/entry-small.html", entry=entry,
+            show_date=show_date)
+
+
 class RecentEntriesModule(tornado.web.UIModule):
     def render(self):
         entries = db.Query(Entry).order("-published").fetch(limit=5)
@@ -285,6 +291,7 @@ settings = {
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "ui_modules": {
         "Entry": EntryModule,
+        "EntrySmall": EntrySmallModule,
         "RecentEntries": RecentEntriesModule,
     },
     "xsrf_cookies": True,

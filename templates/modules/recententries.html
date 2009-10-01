@@ -3,7 +3,7 @@
   <ul>
     {% for entry in entries %}
       <li>
-        <a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a>
+        {{ modules.EntrySmall(entry) }}
       </li>
     {% end %}
   </ul>

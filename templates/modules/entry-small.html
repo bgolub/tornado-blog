@@ -1,0 +1,10 @@
+<div>
+  <div>
+    <a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a>
+  </div>
+  {% if show_date %}
+    <div style="color: gray; font-size: 10pt;">
+      {{ locale.format_date(entry.published, full_format=True, shorter=True) }}
+    </div>
+  {% end %}
+</div>
