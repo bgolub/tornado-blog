@@ -94,6 +94,11 @@ ul {
   margin-top: 5px;
 }
 
+.entry .tags {
+  background: url('../images/tag_blue.png') left center no-repeat;
+  padding-left: 20px;
+}
+
 .entry .body {
   margin-top: 10px;
 }

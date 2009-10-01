@@ -9,7 +9,6 @@
   <div class="body">{{ entry.body }}</div>
   {% if entry.tags %}
     <div class="tags">
-      Tagged:
       {{ locale.list(['<a href="/t/%(tag)s">%(escaped_tag)s</a>' % {"tag": tag, "escaped_tag": escape(tag)} for tag in sorted(entry.tags)]) }}
     </div>
   {% end %}
