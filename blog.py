@@ -192,8 +192,7 @@ class ComposeHandler(BaseHandler):
         tags = set([self.slugify(unicode(tag)) for tag in
             self.get_argument("tags", "").split(",")])
         tags = [db.Category(tag) for tag in tags if tag]
-        if tags:
-            entry.tags = tags
+        entry.tags = tags
         entry.put()
         if not key:
             self.ping()
