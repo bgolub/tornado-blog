@@ -9,7 +9,7 @@
 
 {% block content %}
   <h2>{{ _("Archive") }}</h2>
-  <ul>
+  <ul style="list-style: none; padding: 0;">
     {% for entry in entries %}
       <li style="margin-bottom: 5px;">
         {{ modules.EntrySmall(entry, show_date=True) }}
