@@ -298,6 +298,7 @@ application = tornado.wsgi.WSGIApplication([
     (r"/compose", ComposeHandler),
     (r"/delete", DeleteHandler),
     (r"/e/([\w-]+)", EntryHandler),
+    (r"/feed/?", tornado.web.RedirectHandler, {"url": "/?format=atom"}),
     (r"/t/([\w-]+)", TagHandler),
     (r".*", CatchAllHandler),
 ], **settings)
