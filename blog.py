@@ -143,11 +143,13 @@ class HomeHandler(BaseHandler):
 
 
 class AboutHandler(BaseHandler):
+    @tornado.web.removeslash
     def get(self):
         self.render("about.html")
 
 
 class ArchiveHandler(BaseHandler):
+    @tornado.web.removeslash
     def get(self):
         entries = db.Query(Entry).order("-published")
         self.recent_entries = entries[:5]
@@ -221,6 +223,7 @@ class DeleteHandler(BaseHandler):
 
 
 class EntryHandler(BaseHandler):
+    @tornado.web.removeslash
     def get(self, slug):
         entry = db.Query(Entry).filter("slug =", slug).get()
         if not entry:
@@ -234,11 +237,13 @@ class EntryHandler(BaseHandler):
 
 
 class TagHandler(BaseHandler):
+    @tornado.web.removeslash
     def get(self, tag):
         entries = db.Query(Entry).filter("tags =", tag).order("-published")
         self.render("tag.html", entries=entries, tag=tag)
 
 class CatchAllHandler(BaseHandler):
+    @tornado.web.removeslash
     def get(self):
         self.set_status(404)
         self.render("404.html")
@@ -293,13 +298,13 @@ settings = {
 
 application = tornado.wsgi.WSGIApplication([
     (r"/", HomeHandler),
-    (r"/about", AboutHandler),
-    (r"/archive", ArchiveHandler),
+    (r"/about/?", AboutHandler),
+    (r"/archive/?", ArchiveHandler),
     (r"/compose", ComposeHandler),
     (r"/delete", DeleteHandler),
-    (r"/e/([\w-]+)", EntryHandler),
+    (r"/e/([\w-]+)/?", EntryHandler),
     (r"/feed/?", tornado.web.RedirectHandler, {"url": "/?format=atom"}),
-    (r"/t/([\w-]+)", TagHandler),
+    (r"/t/([\w-]+)/?", TagHandler),
     (r".*", CatchAllHandler),
 ], **settings)
 
