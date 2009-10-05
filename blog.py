@@ -9,21 +9,12 @@ import urllib
 import uuid
 import wsgiref.handlers
 
-from google.appengine.api import urlfetch
-from google.appengine.api import users
-from google.appengine.ext import db
-
 from django.utils import feedgenerator
 
+from google.appengine.ext import db
+from google.appengine.api import urlfetch
+from google.appengine.api import users
 
-class Entry(db.Model):
-    author = db.UserProperty()
-    title = db.StringProperty(required=True)
-    slug = db.StringProperty(required=True)
-    body = db.TextProperty(required=True)
-    published = db.DateTimeProperty(auto_now_add=True)
-    updated = db.DateTimeProperty(auto_now=True)
-    tags = db.ListProperty(db.Category)
 
 def administrator(method):
     @functools.wraps(method)
@@ -39,6 +30,16 @@ def administrator(method):
         else:
             return method(self, *args, **kwargs)
     return wrapper
+
+
+class Entry(db.Model):
+    author = db.UserProperty()
+    title = db.StringProperty(required=True)
+    slug = db.StringProperty(required=True)
+    body = db.TextProperty(required=True)
+    published = db.DateTimeProperty(auto_now_add=True)
+    updated = db.DateTimeProperty(auto_now=True)
+    tags = db.ListProperty(db.Category)
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -241,6 +242,7 @@ class TagHandler(BaseHandler):
     def get(self, tag):
         entries = db.Query(Entry).filter("tags =", tag).order("-published")
         self.render("tag.html", entries=entries, tag=tag)
+
 
 class CatchAllHandler(BaseHandler):
     @tornado.web.removeslash
