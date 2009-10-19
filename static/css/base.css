@@ -136,3 +136,29 @@ pre {
   height: 500px;
   line-height: 16pt;
 }
+
+.elsewhere a {
+  background-position: center left;
+  background-repeat: no-repeat;
+  padding-left: 20px;
+}
+
+.elsewhere .email {
+  background-image: url("../images/email.png");
+}
+
+.elsewhere .facebook {
+  background-image: url("../images/facebook.png");
+}
+
+.elsewhere .flickr {
+  background-image: url("../images/flickr.png");
+}
+
+.elsewhere .twitter {
+  background-image: url("../images/twitter.png");
+}
+
+.elsewhere .friendfeed {
+  background-image: url("../images/friendfeed.png");
+}
