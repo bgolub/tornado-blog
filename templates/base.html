@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/css/base.css" type="text/css"/>
     <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png"/>
     <link rel="alternate" href="/?format=atom" type="application/atom+xml" title="{{ escape(handler.settings["blog_title"]) }}"/>
+    {% block head %}{% end %}
     {% if not handler.settings.get("debug") %}
       <script type="text/javascript">
 
@@ -23,7 +24,6 @@
 
       </script>
     {% end %}
-    {% block head %}{% end %}
   </head>
   <body>
     <div id="header">
