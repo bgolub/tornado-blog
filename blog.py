@@ -241,7 +241,7 @@ class HideHandler(BaseHandler):
             entry = Entry.get(key)
         except db.BadKeyError:
             raise tornado.web.HTTPError(404)
-        entry.hidden = True
+        entry.hidden = not bool(self.get_argument("unhide", False))
         entry.put()
         self.redirect("/")
 
