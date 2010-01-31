@@ -2,17 +2,14 @@
 
 {% block content %}
   <p>
-    {{ _("Are you sure you want to hide <a href=\"%(link)s\">%(title)s</a>?") % {"link": "/e/" + entry.slug, "title": escape(entry.title)} }}
+    {{ _("Are you sure you want to %(verb)s <a href=\"%(link)s\">%(title)s</a>?") % {"link": "/e/" + entry.slug, "title": escape(entry.title), "verb": _("un-hide") if entry.hidden else _("hide") } }}
   </p>
   <form action="{{ request.path }}" method="post">
     {{ xsrf_form_html() }}
     <input type="hidden" name="key" value="{{ str(entry.key()) }}"/>
-    <input type="submit" class="submit" value="{{ _("Hide") }}"/>
-  </form>
-  <form action="{{ request.path }}" method="post">
-    {{ xsrf_form_html() }}
-    <input type="hidden" name="key" value="{{ str(entry.key()) }}"/>
-    <input type="hidden" name="unhide" value="1"/>
-    <input type="submit" class="submit" value="{{ _("Un-hide") }}"/>
+    {% if entry.hidden %}
+      <input type="hidden" name="unhide" value="1"/>
+    {% end %}
+    <input type="submit" class="submit" value="{{ _("Un-hide") if entry.hidden else _("Hide") }}"/>
   </form>
 {% end %}

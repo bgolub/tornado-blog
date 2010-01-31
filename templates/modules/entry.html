@@ -13,18 +13,18 @@
       {{ locale.list(['<a href="/t/%(tag)s">%(escaped_tag)s</a>' % {"tag": tag, "escaped_tag": escape(tag)} for tag in sorted(entry.tags)]) }}
     </div>
   {% end %}
-  {% if not show_comments %}
-    <div class="comments">
-      <a href="/e/{{ entry.slug }}#disqus_thread">Comments</a>
-    </div>
-  {% else %}
-    <div id="disqus_thread"></div>
-  {% end %}
   {% if current_user and current_user.administrator %}
     <div style="margin-top: 5px;">
       <a href="/compose?key={{ str(entry.key()) }}">{{ _("Edit") }}</a>
       <a href="/delete?key={{ str(entry.key()) }}">{{ _("Delete") }}</a>
       <a href="/hide?key={{ str(entry.key()) }}">{{ _("Hide") }}</a>
     </div>
+  {% end %}
+  {% if not show_comments %}
+    <div class="comments">
+      <a href="/e/{{ entry.slug }}#disqus_thread">Comments</a>
+    </div>
+  {% else %}
+    <div id="disqus_thread"></div>
   {% end %}
 </div>
