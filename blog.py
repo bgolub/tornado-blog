@@ -40,6 +40,7 @@ class Entry(db.Model):
     published = db.DateTimeProperty(auto_now_add=True)
     updated = db.DateTimeProperty(auto_now=True)
     tags = db.ListProperty(db.Category)
+    hidden = db.BooleanProperty(default=False)
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -138,7 +139,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        entries = db.Query(Entry).order("-published").fetch(limit=5)
+        entries = db.Query(Entry).filter("hidden =", False).order("-published").fetch(limit=5)
         self.recent_entries = entries
         self.render("home.html", entries=entries)
 
@@ -152,7 +153,7 @@ class AboutHandler(BaseHandler):
 class ArchiveHandler(BaseHandler):
     @tornado.web.removeslash
     def get(self):
-        entries = db.Query(Entry).order("-published")
+        entries = db.Query(Entry).filter("hidden =", False).order("-published")
         self.recent_entries = entries[:5]
         self.render("archive.html", entries=entries)
 
@@ -223,6 +224,28 @@ class DeleteHandler(BaseHandler):
         self.redirect("/")
 
 
+class HideHandler(BaseHandler):
+    @administrator
+    def get(self):
+        key = self.get_argument("key")
+        try:
+            entry = Entry.get(key)
+        except db.BadKeyError:
+            raise tornado.web.HTTPError(404)
+        self.render("hide.html", entry=entry)
+
+    @administrator
+    def post(self):
+        key = self.get_argument("key")
+        try:
+            entry = Entry.get(key)
+        except db.BadKeyError:
+            raise tornado.web.HTTPError(404)
+        entry.hidden = True
+        entry.put()
+        self.redirect("/")
+
+
 class EntryHandler(BaseHandler):
     @tornado.web.removeslash
     def get(self, slug):
@@ -240,7 +263,7 @@ class EntryHandler(BaseHandler):
 class TagHandler(BaseHandler):
     @tornado.web.removeslash
     def get(self, tag):
-        entries = db.Query(Entry).filter("tags =", tag).order("-published")
+        entries = db.Query(Entry).filter("hidden =", False).filter("tags =", tag).order("-published")
         self.render("tag.html", entries=entries, tag=tag)
 
 
@@ -281,7 +304,7 @@ class EntrySmallModule(tornado.web.UIModule):
 class RecentEntriesModule(tornado.web.UIModule):
     def render(self):
         entries = getattr(self.handler, "recent_entries", 
-            db.Query(Entry).order("-published").fetch(limit=5))
+            db.Query(Entry).filter("hidden =", False).order("-published").fetch(limit=5))
         return self.render_string("modules/recententries.html", entries=entries)
 
 
@@ -306,6 +329,7 @@ application = tornado.wsgi.WSGIApplication([
     (r"/delete", DeleteHandler),
     (r"/e/([\w-]+)/?", EntryHandler),
     (r"/feed/?", tornado.web.RedirectHandler, {"url": "/?format=atom"}),
+    (r"/hide", HideHandler),
     (r"/t/([\w-]+)/?", TagHandler),
     (r".*", CatchAllHandler),
 ], **settings)
