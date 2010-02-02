@@ -126,11 +126,12 @@ class BaseHandler(tornado.web.RequestHandler):
         except:
             pass
 
-    def get_error_html(self, status_code):
+    def get_error_html(self, status_code, **kwargs):
         if status_code == 404:
             self.write(self.render_string("404.html"))
         else:
-            return tornado.web.RequestHandler.get_error_html(self, status_code)
+            return tornado.web.RequestHandler.get_error_html(self, status_code,
+                                                             **kwargs)
 
     def head(self, *args):
         if self.get_argument("format", None) == "atom":
