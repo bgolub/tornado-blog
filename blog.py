@@ -279,11 +279,11 @@ class CatchAllHandler(BaseHandler):
 
 
 class EntryModule(tornado.web.UIModule):
-    def render(self, entry, show_comments=False):
+    def render(self, entry, show_comments=False, show_share=False):
         self.show_comments = show_comments
         self.show_count = not show_comments
         return self.render_string("modules/entry.html", entry=entry,
-            show_comments=show_comments)
+            show_comments=show_comments, show_share=show_share)
 
     def embedded_javascript(self):
         if self.show_count:

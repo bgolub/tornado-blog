@@ -1,9 +1,11 @@
 <div class="entry">
   <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
-  <div style="float: right">
-    <a name="fb_share" type="button_count" share_url="http://{{ request.host }}/e/{{ entry.slug }}" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
-    <a style="margin-left: 5px;" class="retweet" href="/e/{{ entry.slug }}" title="{{ escape(entry.title) }}"></a> 
-  </div>
+  {% if show_share %}
+    <div style="float: right">
+      <a name="fb_share" type="button_count" share_url="http://{{ request.host }}/e/{{ entry.slug }}" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
+      <a style="margin-left: 5px;" class="retweet" href="/e/{{ entry.slug }}" title="{{ escape(entry.title) }}"></a> 
+    </div>
+  {% end %}
   <div class="date">
     {{ locale.format_date(entry.published, full_format=True, shorter=True) }}
   </div>
