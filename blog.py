@@ -198,8 +198,9 @@ class ComposeHandler(BaseHandler):
             self.get_argument("tags", "").split(",")])
         tags = [db.Category(tag) for tag in tags if tag]
         entry.tags = tags
+        entry.hidden = bool(self.get_argument("hidden", False))
         entry.put()
-        if not key:
+        if not key and not entry.hidden:
             self.ping()
         self.redirect("/e/" + entry.slug)
 
