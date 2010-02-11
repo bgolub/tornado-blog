@@ -47,6 +47,11 @@ a:hover {
   width: 100%;
 }
 
+#content p,
+#content li {
+  line-height: 17pt;
+}
+
 #sidebar {
   display: block;
   width: 250px;
