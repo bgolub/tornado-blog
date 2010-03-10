@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+{% set date_format = "%Y-%m-%dT%H:%M:%SZ" %}
+{% set title = handler.application.settings["blog_title"] %}
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <title type="text">{{ escape(title) }}</title>
+  <id>{{ escape(handler.request.full_url()) }}</id>
+  <updated>{{ max(e.updated for e in entries).strftime(date_format) }}</updated>
+  <link rel="alternate" href="http://{{ handler.request.host + handler.request.path }}" title="{{ escape(title) }}" type="text/html"/>
+  <link rel="self" href="http://{{ handler.request.host + handler.request.path }}?format=atom" title="{{ escape(title) }}" type="application/atom+xml"/>
+  <link rel="hub" href="http://pubsubhubbub.appspot.com/"/>
+  {% for entry in entries %}
+    <entry>
+      <id>tag:www.benjamingolub.com,{{ entry.published.strftime("%Y-%m-%d") }}:/e/{{ entry.slug }}</id>
+      <link href="http://{{ handler.request.host + "/e/" + entry.slug }}" rel="alternate" type="text/html"/>
+      <title type="text">{{ escape(entry.title) }}</title>
+      <updated>{{ entry.updated.strftime(date_format) }}</updated>
+      <published>{{ entry.published.strftime(date_format) }}</published>
+      <author><name>{{ escape(entry.author.nickname()) }}</name></author>
+      <content type="html">{{ escape(entry.body) }}</content>
+      {% for tag in entry.tags %}
+        <category term="{{ escape(tag) }}"></category>
+      {% end %}
+    </entry>
+  {% end %}
+</feed>

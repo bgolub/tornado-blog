@@ -9,8 +9,6 @@ import urllib
 import uuid
 import wsgiref.handlers
 
-from django.utils import feedgenerator
-
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api import users
@@ -63,26 +61,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def render(self, template_name, **kwargs):
         format = self.get_argument("format", None)
         if "entries" in kwargs and format == "atom":
-            feed = feedgenerator.Atom1Feed(
-                title=self.application.settings["blog_title"],
-                description=self.application.settings["blog_title"],
-                link=self.request.path,
-                language="en",
-            )
-            for entry in kwargs["entries"]:
-                feed.add_item(
-                    title=entry.title,
-                    link="http://" + self.request.host + "/e/" + entry.slug,
-                    description=entry.body,
-                    author_name=entry.author.nickname(),
-                    pubdate=entry.published,
-                    categories=entry.tags,
-                )
-            data = feed.writeString("utf-8")
             self.set_header("Content-Type", "application/atom+xml")
             self.set_sup_header()
-            self.write(data)
-            return
+            template_name = "feed.html"
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
     def slugify(self, value):
@@ -123,6 +104,18 @@ class BaseHandler(tornado.web.RequestHandler):
         })
         try:
             urlfetch.fetch("http://www.feedburner.com/fb/a/pingSubmit?" + args)
+        except:
+            pass
+        args = urllib.urlencode({
+            "hub.mode": "publish",
+            "hub.url": feed,
+        })
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        try:
+            result = urlfetch.fetch("http://pubsubhubbub.appspot.com/",
+                payload=args, method=urlfetch.POST, headers=headers)
         except:
             pass
 
