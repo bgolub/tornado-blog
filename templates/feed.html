@@ -10,7 +10,7 @@
   <link rel="hub" href="http://pubsubhubbub.appspot.com/"/>
   {% for entry in entries %}
     <entry>
-      <id>tag:www.benjamingolub.com,{{ entry.published.strftime("%Y-%m-%d") }}:/e/{{ entry.slug }}</id>
+      <id>tag:{{ handler.request.host }},{{ entry.published.strftime("%Y-%m-%d") }}:/e/{{ entry.slug }}</id>
       <link href="http://{{ handler.request.host + "/e/" + entry.slug }}" rel="alternate" type="text/html"/>
       <title type="text">{{ escape(entry.title) }}</title>
       <updated>{{ entry.updated.strftime(date_format) }}</updated>
