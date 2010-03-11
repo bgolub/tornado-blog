@@ -1,3 +1,4 @@
+import BeautifulSoup
 import functools
 import hashlib
 import os
@@ -295,6 +296,24 @@ class EntryModule(tornado.web.UIModule):
         return None
 
 
+class MediaRSSModule(tornado.web.UIModule):
+    def render(self, entry):
+        soup = BeautifulSoup.BeautifulSoup(entry.body)
+        imgs = soup.findAll("img")
+        thumbnails = []
+        for img in imgs:
+            if "nomediarss" in img.get("class", "").split():
+                continue
+            thumbnails.append({
+                "url": img["src"],
+                "title": img.get("title", img.get("alt", "")),
+                "width": img.get("width", ""),
+                "height": img.get("height", ""),
+            })
+        return self.render_string("modules/mediarss.html", entry=entry,
+            thumbnails=thumbnails) 
+
+
 class EntrySmallModule(tornado.web.UIModule):
     def render(self, entry, show_date=False):
         return self.render_string("modules/entry-small.html", entry=entry,
@@ -316,6 +335,7 @@ settings = {
     "ui_modules": {
         "Entry": EntryModule,
         "EntrySmall": EntrySmallModule,
+        "MediaRSS": MediaRSSModule,
         "RecentEntries": RecentEntriesModule,
     },
     "xsrf_cookies": True,

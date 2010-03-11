@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 {% set date_format = "%Y-%m-%dT%H:%M:%SZ" %}
 {% set title = handler.application.settings["blog_title"] %}
-<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en">
   <title type="text">{{ escape(title) }}</title>
   <id>{{ escape(handler.request.full_url()) }}</id>
   <updated>{{ max(e.updated for e in entries).strftime(date_format) }}</updated>
@@ -20,6 +20,7 @@
       {% for tag in entry.tags %}
         <category term="{{ escape(tag) }}"></category>
       {% end %}
+      {{ modules.MediaRSS(entry) }}
     </entry>
   {% end %}
 </feed>

@@ -1,0 +1,5 @@
+{% for thumbnail in thumbnails %}
+  <media:content url="{{ escape(thumbnail["url"]) }}">
+    <media:thumbnail url="{{ escape(thumbnail["url"]) }}" width="{{ escape(thumbnail["width"]) }}" height="{{ escape(thumbnail["height"]) }}"></media:thumbnail>
+  </media:content>
+{% end %}
