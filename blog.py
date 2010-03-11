@@ -81,6 +81,11 @@ class BaseHandler(tornado.web.RequestHandler):
             "http://friendfeed.com/api/public-sup.json#" + sup_id) 
 
     def ping(self):
+        # Swallow exceptions when pinging, urlfetch can be unstable and it
+        # isn't the end of the world if a ping doesn't make it. Since we don't
+        # care about the response, in an ideal world, the urlfetch API would
+        # have an option to perform all of this asynchronously and optionally
+        # specify a number of retries
         feed = "http://" + self.request.host + "/?format=atom"
         args = urllib.urlencode({
             "name": self.application.settings["blog_title"],
