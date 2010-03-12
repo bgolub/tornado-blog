@@ -298,7 +298,8 @@ class EntryModule(tornado.web.UIModule):
 
 class MediaRSSModule(tornado.web.UIModule):
     def render(self, entry):
-        soup = BeautifulSoup.BeautifulSoup(entry.body)
+        soup = BeautifulSoup.BeautifulSoup(entry.body,
+            parseOnlyThese=BeautifulSoup.SoupStrainer('img'))
         imgs = soup.findAll("img")
         thumbnails = []
         for img in imgs:
