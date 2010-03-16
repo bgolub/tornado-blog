@@ -69,6 +69,20 @@ class BaseHandler(tornado.web.RequestHandler):
             self.set_header("Content-Type", "application/atom+xml")
             self.set_sup_header()
             template_name = "atom.xml"
+        if "entries" in kwargs and format == "json":
+            json_entries = [{
+                "title": entry.title,
+                "slug": entry.slug,
+                "body": entry.body,
+                "author": entry.author.nickname(),
+                "published": entry.published.isoformat(),
+                "updated": entry.updated.isoformat(),
+                "tags": entry.tags,
+                "link": "http://" + self.request.host + "/e/" + entry.slug,
+            } for entry in kwargs["entries"]]
+            self.set_header("Content-Type", "text/javascript")
+            self.write({"entries": json_entries})
+            return
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
     def slugify(self, value):
