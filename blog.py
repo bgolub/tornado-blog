@@ -61,10 +61,14 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
         format = self.get_argument("format", None)
-        if "entries" in kwargs and format == "atom":
+        if "entries" in kwargs and isinstance(kwargs["entries"], db.Query):
+            # Force evaluate queries so we know if there are entries before
+            # trying to render a feed
+            kwargs["entries"] = list(kwargs["entries"])
+        if kwargs.get("entries") and format == "atom":
             self.set_header("Content-Type", "application/atom+xml")
             self.set_sup_header()
-            template_name = "feed.html"
+            template_name = "atom.xml"
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
     def slugify(self, value):
