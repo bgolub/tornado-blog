@@ -2,8 +2,7 @@
   <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
   {% if show_share %}
     <div style="float: right">
-      <a name="fb_share" type="button_count" share_url="http://{{ request.host }}/e/{{ entry.slug }}" href="http://www.facebook.com/sharer.php">Share</a><script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
-      <a style="margin-left: 5px;" class="retweet" href="/e/{{ entry.slug }}" title="{{ escape(entry.title) }}"></a> 
+      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape(request.full_url()) }}" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; float:right;"></iframe>
     </div>
   {% end %}
   <div class="date">
