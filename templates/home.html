@@ -2,6 +2,6 @@
 
 {% block content %}
   {% for entry in entries %}
-    {{ modules.Entry(entry) }}
+    {{ modules.Entry(entry, show_share=True) }}
   {% end %}
 {% end %}

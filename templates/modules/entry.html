@@ -1,8 +1,8 @@
 <div class="entry">
   <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
   {% if show_share %}
-    <div style="float: right">
-      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape(request.full_url()) }}" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; float:right;"></iframe>
+    <div style="float: right; height: 18px;">
+      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/e/' + entry.slug) }}&amp;show_faces=false" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; float:right;"></iframe>
     </div>
   {% end %}
   <div class="date">
