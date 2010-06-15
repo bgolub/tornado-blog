@@ -349,6 +349,7 @@ class RecentEntriesModule(tornado.web.UIModule):
 settings = {
     "blog_author": "Benjamin Golub",
     "blog_title": "Benjamin Golub",
+    "fb_admins": "15500414",
     "debug": os.environ.get("SERVER_SOFTWARE", "").startswith("Development/"),
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "ui_modules": {
