@@ -2,7 +2,7 @@
 
 {% block content %}
   <p>
-    {{ _("Are you sure you want to %(verb)s <a href=\"%(link)s\">%(title)s</a>?") % {"link": "/e/" + entry.slug, "title": escape(entry.title), "verb": _("un-hide") if entry.hidden else _("hide") } }}
+    {{ _("Are you sure you want to %(verb)s <a href=\"%(link)s\">%(title)s</a>?") % {"link": "/" + entry.slug, "title": escape(entry.title), "verb": _("un-hide") if entry.hidden else _("hide") } }}
   </p>
   <form action="{{ request.path }}" method="post">
     {{ xsrf_form_html() }}

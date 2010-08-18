@@ -2,7 +2,7 @@
 
 {% block content %}
   <p>
-    {{ _("Are you sure you want to delete <a href=\"%(link)s\">%(title)s</a>?") % {"link": "/e/" + entry.slug, "title": escape(entry.title)} }}
+    {{ _("Are you sure you want to delete <a href=\"%(link)s\">%(title)s</a>?") % {"link": "/" + entry.slug, "title": escape(entry.title)} }}
   </p>
   <form action="{{ request.path }}" method="post">
     {{ xsrf_form_html() }}

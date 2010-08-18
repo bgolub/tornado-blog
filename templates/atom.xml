@@ -11,7 +11,7 @@
   {% for entry in entries %}
     <entry>
       <id>tag:{{ handler.request.host }},{{ entry.published.strftime("%Y-%m-%d") }}:/e/{{ entry.slug }}</id>
-      <link href="http://{{ handler.request.host + "/e/" + entry.slug }}" rel="alternate" type="text/html"/>
+      <link href="http://{{ handler.request.host + "/" + entry.slug }}" rel="alternate" type="text/html"/>
       <title type="text">{{ escape(entry.title) }}</title>
       <updated>{{ entry.updated.strftime(date_format) }}</updated>
       <published>{{ entry.published.strftime(date_format) }}</published>

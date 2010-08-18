@@ -78,7 +78,7 @@ class BaseHandler(tornado.web.RequestHandler):
                 "published": entry.published.isoformat(),
                 "updated": entry.updated.isoformat(),
                 "tags": entry.tags,
-                "link": "http://" + self.request.host + "/e/" + entry.slug,
+                "link": "http://" + self.request.host + "/" + entry.slug,
             } for entry in kwargs["entries"]]
             self.set_header("Content-Type", "text/javascript")
             self.write({"entries": json_entries})
@@ -219,7 +219,7 @@ class ComposeHandler(BaseHandler):
         entry.put()
         if not key and not entry.hidden:
             self.ping()
-        self.redirect("/e/" + entry.slug)
+        self.redirect("/" + entry.slug)
 
 
 class DeleteHandler(BaseHandler):
@@ -265,19 +265,15 @@ class HideHandler(BaseHandler):
         self.redirect("/")
 
 
-class EntryHandler(BaseHandler):
+class OldEntryHandler(BaseHandler):
     @tornado.web.removeslash
     def get(self, slug):
-        entry = db.Query(Entry).filter("slug =", slug).get()
-        if not entry:
-            raise tornado.web.HTTPError(404)
-        self.render("entry.html", entry=entry, entries=[entry])
+        self.redirect("/" + slug)
 
+    @tornado.web.removeslash
     def head(self, slug):
-        entry = db.Query(Entry).filter("slug =", slug).get()
-        if not entry:
-            raise tornado.web.HTTPError(404)
-
+        return self.get(slug)
+        
 
 class TagHandler(BaseHandler):
     @tornado.web.removeslash
@@ -287,13 +283,24 @@ class TagHandler(BaseHandler):
 
 
 class CatchAllHandler(BaseHandler):
+    def __init__(self, *args, **kwargs):
+        BaseHandler.__init__(self, *args, **kwargs)
+        self.entry = None
+        slug = self.request.path[1:]
+        if slug:
+            self.entry = db.Query(Entry).filter("slug =", slug).get()
+
     @tornado.web.removeslash
     def get(self):
+        if self.entry:
+            return self.render("entry.html", entry=self.entry,
+                               entries=[self.entry])
         self.set_status(404)
         self.render("404.html")
 
     def head(self):
-        self.set_status(404)
+        if not self.entry:
+            self.set_status(404)
 
 
 class EntryModule(tornado.web.UIModule):
@@ -367,7 +374,7 @@ application = tornado.wsgi.WSGIApplication([
     (r"/archive/?", ArchiveHandler),
     (r"/compose", ComposeHandler),
     (r"/delete", DeleteHandler),
-    (r"/e/([\w-]+)/?", EntryHandler),
+    (r"/e/([\w-]+)/?", OldEntryHandler),
     (r"/feed/?", tornado.web.RedirectHandler, {"url": "/?format=atom"}),
     (r"/hide", HideHandler),
     (r"/t/([\w-]+)/?", TagHandler),
