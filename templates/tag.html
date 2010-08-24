@@ -8,9 +8,9 @@
 
 {% block content %}
   <h2>{{ escape(tag) }}</h2>
-  <ul style="list-style: none; padding: 0;">
+  <ul class="tag">
     {% for entry in entries %}
-      <li style="margin-bottom: 5px;">
+      <li>
         {{ modules.EntrySmall(entry, show_date=True) }}
       </li>
     {% end %}

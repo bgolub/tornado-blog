@@ -1,8 +1,8 @@
 <div class="entry">
   <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
   {% if show_share %}
-    <div style="float: right; height: 18px;">
-      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/' + entry.slug) }}&amp;show_faces=false" scrolling="no" frameborder="0" allowTransparency="true" style="border:none; overflow:hidden; float:right;"></iframe>
+    <div class="facebook">
+      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/' + entry.slug) }}&amp;show_faces=false" scrolling="no" frameborder="0" allowTransparency="true" ></iframe>
     </div>
   {% end %}
   <div class="date">
@@ -15,7 +15,7 @@
     </div>
   {% end %}
   {% if current_user and current_user.administrator %}
-    <div style="margin-top: 5px;">
+    <div class="admin">
       <a href="/compose?key={{ str(entry.key()) }}">{{ _("Edit") }}</a>
       <a href="/delete?key={{ str(entry.key()) }}">{{ _("Delete") }}</a>
       <a href="/hide?key={{ str(entry.key()) }}">{{ _("Hide") }}</a>
