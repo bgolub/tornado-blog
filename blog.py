@@ -157,9 +157,14 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        entries = db.Query(Entry).filter("hidden =", False).order("-published").fetch(limit=5)
-        self.recent_entries = entries
-        self.render("home.html", entries=entries)
+        q = db.Query(Entry).filter("hidden =", False).order("-published")
+        cursor = self.get_argument("cursor", None)
+        if cursor:
+            q.with_cursor(cursor)
+        entries = q.fetch(limit=5)
+        if not cursor:
+            self.recent_entries = entries
+        self.render("home.html", entries=entries, cursor=q.cursor())
 
 
 class AboutHandler(BaseHandler):
@@ -278,8 +283,9 @@ class OldEntryHandler(BaseHandler):
 class TagHandler(BaseHandler):
     @tornado.web.removeslash
     def get(self, tag):
-        entries = db.Query(Entry).filter("hidden =", False).filter("tags =", tag).order("-published")
-        self.render("tag.html", entries=entries, tag=tag)
+        q = db.Query(Entry).filter("hidden =", False).filter("tags =", tag)
+        q.order("-published")
+        self.render("tag.html", entries=q, tag=tag)
 
 
 class CatchAllHandler(BaseHandler):
@@ -348,9 +354,20 @@ class EntrySmallModule(tornado.web.UIModule):
 
 class RecentEntriesModule(tornado.web.UIModule):
     def render(self):
-        entries = getattr(self.handler, "recent_entries", 
-            db.Query(Entry).filter("hidden =", False).order("-published").fetch(limit=5))
+        entries = getattr(self.handler, "recent_entries", None)
+        if not entries:
+            q = db.Query(Entry).filter("hidden =", False).order("-published")
+            entries = q.fetch(limit=5)
         return self.render_string("modules/recententries.html", entries=entries)
+
+
+class NavigationModule(tornado.web.UIModule):
+    def render(self, cursor):
+        kwargs = {
+            "cursor": cursor,
+        }
+        previous = self.request.path + "?" + urllib.urlencode(kwargs)
+        return self.render_string("modules/navigation.html", previous=previous)
 
 
 settings = {
@@ -364,6 +381,7 @@ settings = {
         "EntrySmall": EntrySmallModule,
         "MediaRSS": MediaRSSModule,
         "RecentEntries": RecentEntriesModule,
+        "Navigation": NavigationModule,
     },
     "xsrf_cookies": True,
 }

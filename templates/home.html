@@ -4,4 +4,7 @@
   {% for entry in entries %}
     {{ modules.Entry(entry, show_share=True) }}
   {% end %}
+  {% if entries and cursor %}
+    {{ modules.Navigation(cursor) }}
+  {% end %}
 {% end %}
