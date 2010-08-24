@@ -160,7 +160,10 @@ class HomeHandler(BaseHandler):
         q = db.Query(Entry).filter("hidden =", False).order("-published")
         cursor = self.get_argument("cursor", None)
         if cursor:
-            q.with_cursor(cursor)
+            try:
+                q.with_cursor(cursor)
+            except (db.BadRequestError, db.BadValueError):
+                cursor = None
         entries = q.fetch(limit=5)
         if not cursor:
             self.recent_entries = entries
