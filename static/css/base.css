@@ -167,3 +167,7 @@ pre {
 .elsewhere .friendfeed {
   background-image: url("../images/friendfeed.png");
 }
+
+.navigation {
+  margin-top: 30px;
+}
