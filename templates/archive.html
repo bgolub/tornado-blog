@@ -16,4 +16,7 @@
       </li>
     {% end %}
   </ul>
+  {% if entries and cursor %}
+    {{ modules.Navigation(cursor) }}
+  {% end %}
 {% end %}

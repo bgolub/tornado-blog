@@ -179,9 +179,17 @@ class AboutHandler(BaseHandler):
 class ArchiveHandler(BaseHandler):
     @tornado.web.removeslash
     def get(self):
-        entries = db.Query(Entry).filter("hidden =", False).order("-published")
-        self.recent_entries = entries[:5]
-        self.render("archive.html", entries=entries)
+        q = db.Query(Entry).filter("hidden =", False).order("-published")
+        cursor = self.get_argument("cursor", None)
+        if cursor:
+            try:
+                q.with_cursor(cursor)
+            except (db.BadRequestError, db.BadValueError):
+                cursor = None
+        entries = q.fetch(limit=10)
+        if not cursor:
+            self.recent_entries = entries[:5]
+        self.render("archive.html", entries=entries, cursor=q.cursor())
 
 
 class ComposeHandler(BaseHandler):
