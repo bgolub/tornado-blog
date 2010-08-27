@@ -80,8 +80,13 @@ class BaseHandler(tornado.web.RequestHandler):
                 "tags": entry.tags,
                 "link": "http://" + self.request.host + "/" + entry.slug,
             } for entry in kwargs["entries"]]
+            json = {
+                "entries": json_entries,
+            }
+            if "cursor" in kwargs:
+                json["cursor"] = kwargs["cursor"]
             self.set_header("Content-Type", "text/javascript")
-            self.write({"entries": json_entries})
+            self.write(json)
             return
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
