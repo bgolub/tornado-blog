@@ -1,5 +1,5 @@
 <div class="entry">
-  <h1><a href="/e/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
+  <h1><a href="/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
   {% if show_share %}
     <div class="facebook">
       <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/' + entry.slug) }}&amp;show_faces=false" scrolling="no" frameborder="0" allowTransparency="true" ></iframe>
@@ -23,7 +23,7 @@
   {% end %}
   {% if not show_comments %}
     <div class="comments">
-      <a href="/e/{{ entry.slug }}#disqus_thread">Comments</a>
+      <a href="/{{ entry.slug }}#disqus_thread">Comments</a>
     </div>
   {% else %}
     <div id="disqus_thread"></div>
