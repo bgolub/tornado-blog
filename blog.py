@@ -169,10 +169,12 @@ class HomeHandler(BaseHandler):
                 q.with_cursor(cursor)
             except (db.BadRequestError, db.BadValueError):
                 cursor = None
-        entries = q.fetch(limit=5)
+        limit = self.application.settings.get("num_home", 5)
+        entries = q.fetch(limit=limit)
         if not cursor:
             self.recent_entries = entries
-        self.render("home.html", entries=entries, cursor=q.cursor())
+        cursor = q.cursor() if len(entries) == limit else None
+        self.render("home.html", entries=entries, cursor=cursor)
 
 
 class AboutHandler(BaseHandler):
@@ -191,10 +193,12 @@ class ArchiveHandler(BaseHandler):
                 q.with_cursor(cursor)
             except (db.BadRequestError, db.BadValueError):
                 cursor = None
-        entries = q.fetch(limit=10)
+        limit = self.application.settings.get("num_archive", 10)
+        entries = q.fetch(limit=limit)
         if not cursor:
             self.recent_entries = entries[:5]
-        self.render("archive.html", entries=entries, cursor=q.cursor())
+        cursor = q.cursor() if len(entries) == limit else None
+        self.render("archive.html", entries=entries, cursor=cursor)
 
 
 class ComposeHandler(BaseHandler):
