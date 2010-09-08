@@ -195,7 +195,7 @@ pre {
 }
 
 .entry .facebook {
-  float: right;
+  padding: 5px 0;
   height: 18px;
 }
 

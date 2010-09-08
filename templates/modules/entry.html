@@ -1,13 +1,13 @@
 <div class="entry">
   <h1><a href="/{{ entry.slug }}">{{ escape(entry.title) }}</a></h1>
+  <div class="date">
+    {{ locale.format_date(entry.published, full_format=True, shorter=True) }}
+  </div>
   {% if show_share %}
     <div class="facebook">
       <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/' + entry.slug) }}&amp;show_faces=false" scrolling="no" frameborder="0" allowTransparency="true" ></iframe>
     </div>
   {% end %}
-  <div class="date">
-    {{ locale.format_date(entry.published, full_format=True, shorter=True) }}
-  </div>
   <div class="body">{{ entry.body }}</div>
   {% if entry.tags %}
     <div class="tags">
