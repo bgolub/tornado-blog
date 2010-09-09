@@ -5,7 +5,7 @@
   </div>
   {% if show_share %}
     <div class="facebook">
-      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/' + entry.slug) }}&amp;show_faces=false" scrolling="no" frameborder="0" allowTransparency="true" ></iframe>
+      <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape('http://' + request.host + '/' + entry.slug) }}&amp;layout=button_count" scrolling="no" frameborder="0" allowTransparency="true" ></iframe>
     </div>
   {% end %}
   <div class="body">{{ entry.body }}</div>

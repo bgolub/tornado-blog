@@ -90,10 +90,7 @@ a:hover {
   margin-bottom: 30px;
 }
 
-.entry .date,
-.entry .tags,
-.entry .comments,
-.entry .admin {
+.entry .date {
   margin-top: 5px;
 }
 
@@ -102,7 +99,11 @@ a:hover {
   padding-left: 20px;
 }
 
-.entry .body {
+.entry .admin,
+.entry .body, 
+.entry .comments,
+.entry .facebook,
+.entry .tags {
   margin-top: 10px;
 }
 
@@ -195,7 +196,6 @@ pre {
 }
 
 .entry .facebook {
-  padding: 5px 0;
   height: 18px;
 }
 
