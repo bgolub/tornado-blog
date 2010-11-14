@@ -27,12 +27,7 @@
     {% end %}
   </head>
   <body>
-    <div id="header">
-      <div class="title">
-        <a href="/">{{ escape(handler.settings["blog_title"]) }}</a>
-      </div>
-    </div>
-    <table>
+    <table id="body">
       <tr>
         <td id="content">
           {% block content %}{% end %}
@@ -43,6 +38,7 @@
             <ul>
               <li><a href="/about">{{ _("About") }}</a></li>
               <li><a href="/archive">{{ _("Archive") }}</a></li>
+              <li><a href="/">{{ _("Home") }}</a></li>
             </ul>
           </div>
           <div class="box elsewhere">
@@ -56,7 +52,7 @@
             </ul>
           </div>
           {{ modules.RecentEntries() }}
-          <div class="box tos">
+          <div class="box small">
             The opinions expressed on this site are mine and do not
             necessarily represent those of my
             <a href="http://www.facebook.com/">employer</a>. You won't find any
@@ -65,24 +61,35 @@
             <a href="mailto:benjamin.golub@gmail.com">get in touch with me</a>,
             I'm afraid I can't put you in contact with my employer.
           </div>
+          <div class="box small">
+            &copy;{{ datetime.datetime.utcnow().year }} {{ escape(handler.settings["blog_author"]) }}
+          </div>
+          <div class="box small">
+              <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons license</a>
+              -
+              <a href="http://github.com/bgolub/tornado-blog">Source</a>
+          </div>
+          <div class="box small">
+            <ul>
+              {% if current_user %}
+                {% if current_user.administrator %}
+                  <li>
+                    <a href="/compose">{{ _("Compose") }}</a>
+                  </li>
+                {% end %}
+                    <li>
+                      <a href="{{ users.create_logout_url(request.uri) }}">{{ _("Sign out") }}</a>
+                    <li>
+              {% else %}
+                <li>
+                  <a href="{{ users.create_login_url(request.uri) }}">{{ _("Sign in") }}</a>
+                </li>
+              {% end %}
+            </ul>
+          </div>
         </td>
       </tr>
     </table>
-    <div id="footer">
-      &copy;{{ datetime.datetime.utcnow().year }} {{ escape(handler.settings["blog_author"]) }}
-      - <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons license</a>
-      - <a href="http://github.com/bgolub/tornado-blog">Source</a>
-      -
-      {% if current_user %}
-        {% if current_user.administrator %}
-          <a href="/compose">{{ _("Compose") }}</a>
-          -
-        {% end %}
-        <a href="{{ users.create_logout_url(request.uri) }}">{{ _("Sign out") }}</a>
-      {% else %}
-        <a href="{{ users.create_login_url(request.uri) }}">{{ _("Sign in") }}</a>
-      {% end %}
-    </div>
     {% block bottom %}{% end %}
     <script src="/static/javascript/retweet.js" type="text/javascript"></script>
   </body>

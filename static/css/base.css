@@ -34,17 +34,13 @@ a:hover {
   text-decoration: underline;
 }
 
-#header {
-  background-color: #3b5998;
-  padding: 10px;
-}
-
-#header a {
-  color: white;
+#body {
+  margin: 0 auto;
 }
 
 #content {
-  width: 100%;
+  max-width: 625px;
+  width: 625px;
 }
 
 #content p,
@@ -185,7 +181,7 @@ pre {
   margin-bottom: 5px;
 }
 
-.tos {
+.small {
   color: gray;
   font-size: 8pt;
 }
