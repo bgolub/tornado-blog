@@ -10,6 +10,8 @@ import urllib
 import uuid
 import wsgiref.handlers
 
+from django.utils import simplejson as json
+
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api import users
@@ -80,13 +82,14 @@ class BaseHandler(tornado.web.RequestHandler):
                 "tags": entry.tags,
                 "link": "http://" + self.request.host + "/" + entry.slug,
             } for entry in kwargs["entries"]]
-            json = {
+            data = {
                 "entries": json_entries,
             }
             if "cursor" in kwargs:
-                json["cursor"] = kwargs["cursor"]
+                data["cursor"] = kwargs["cursor"]
             self.set_header("Content-Type", "text/javascript")
-            self.write(json)
+            self.write(json.dumps(data, sort_keys=True, indent=4) if 
+                self.get_argument("pretty", False) else data)
             return
         return tornado.web.RequestHandler.render(self, template_name, **kwargs)
 
