@@ -333,20 +333,14 @@ class CatchAllHandler(BaseHandler):
 
 
 class EntryModule(tornado.web.UIModule):
-    def render(self, entry, show_comments=False, show_share=False):
+    def render(self, entry, show_comments=False):
         self.show_comments = show_comments
-        self.show_count = not show_comments
         return self.render_string("modules/entry.html", entry=entry,
-            show_comments=show_comments, show_share=show_share)
-
-    def embedded_javascript(self):
-        if self.show_count:
-            return self.render_string("disquscount.js")
-        return None
+            show_comments=show_comments)
 
     def javascript_files(self):
         if self.show_comments:
-            return ["http://disqus.com/forums/benjamingolub/embed.js"]
+            return ["http://connect.facebook.net/en_US/all.js#xfbml=1"]
         return None
 
 
@@ -397,6 +391,7 @@ settings = {
     "blog_author": "Benjamin Golub",
     "blog_title": "Benjamin Golub",
     "fb_admins": "15500414",
+    "fb_app_id": "143871635676545",
     "debug": os.environ.get("SERVER_SOFTWARE", "").startswith("Development/"),
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "ui_modules": {

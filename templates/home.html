@@ -2,7 +2,7 @@
 
 {% block content %}
   {% for entry in entries %}
-    {{ modules.Entry(entry, show_share=True) }}
+    {{ modules.Entry(entry) }}
   {% end %}
   {% if entries and cursor %}
     {{ modules.Navigation(cursor) }}
