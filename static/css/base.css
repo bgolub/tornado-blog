@@ -95,6 +95,11 @@ a:hover {
   padding-left: 20px;
 }
 
+.entry .comments a {
+  background: url('../images/comments.png') left center no-repeat;
+  padding-left: 20px;
+}
+
 .entry .admin,
 .entry .body, 
 .entry .comments,
