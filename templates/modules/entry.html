@@ -21,6 +21,7 @@
   {% end %}
   <div class="comments" id="comments">
     {% if show_comments %}
+      <div id="fb-root"></div>
       <fb:comments href="{{ 'http://' + request.host + '/' + entry.slug }}"></fb:comments>
     {% else %}
       <a href="/{{ entry.slug }}#comments">{{ _("Comments") }}</a>

@@ -340,7 +340,8 @@ class EntryModule(tornado.web.UIModule):
 
     def javascript_files(self):
         if self.show_comments:
-            return ["http://connect.facebook.net/en_US/all.js#xfbml=1"]
+            return ["http://connect.facebook.net/en_US/all.js#appId=" +
+              self.handler.application.settings["fb_app_id"] + "&xfbml=1"]
         return None
 
 
