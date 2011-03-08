@@ -1,5 +1,11 @@
 {% extends base.html %}
 
+{% block head %}
+  <meta property="og:description" content="Benjamin Golub's blog"/>
+  <meta property="og:image" content="http://{{ request.host }}/static/images/favicon.png"/>
+  <meta property="og:type" content="blog"/>
+{% end %}
+
 {% block content %}
   {% for entry in entries %}
     {{ modules.Entry(entry) }}
