@@ -384,13 +384,14 @@ class EntrySmallModule(tornado.web.UIModule):
 
 class RecentEntriesModule(tornado.web.UIModule):
     def render(self):
-        cache_key = 'home_entries:%s:%s' % (None, 5)
+        limit = self.handler.application.settings.get("num_home", 5)
+        cache_key = 'home_entries:%s:%s' % (None, limit)
         cached_data = memcache.get(cache_key)
         if cached_data:
             (entries, new_cursor) = cached_data
         else:
             q = db.Query(Entry).filter("hidden =", False).order("-published")
-            entries = q.fetch(limit=5)
+            entries = q.fetch(limit=limit)
         return self.render_string("modules/recententries.html", entries=entries)
 
 
