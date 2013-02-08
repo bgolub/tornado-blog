@@ -13,6 +13,7 @@ import wsgiref.handlers
 from django.utils import simplejson as json
 
 from google.appengine.ext import db
+from google.appengine.api import memcache
 from google.appengine.api import urlfetch
 from google.appengine.api import users
 
@@ -165,19 +166,29 @@ class BaseHandler(tornado.web.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        q = db.Query(Entry).filter("hidden =", False).order("-published")
         cursor = self.get_argument("cursor", None)
-        if cursor:
-            try:
-                q.with_cursor(cursor)
-            except (db.BadRequestError, db.BadValueError):
-                cursor = None
         limit = self.application.settings.get("num_home", 5)
-        entries = q.fetch(limit=limit)
-        if not cursor:
-            self.recent_entries = entries
-        cursor = q.cursor() if len(entries) == limit else None
-        self.render("home.html", entries=entries, cursor=cursor)
+        # The cursor is in the cache key. We never evict caches other than
+        # 'home_entries:None:5' which is the front page. Doing so will cause
+        # the cursors to change and thus change the key. Eventually memcache
+        # will evict the cache keys containing cursors that are never fetched
+        # once memory usage goes high because stale cursors should never get hit
+        # and hopefully the App Engine memcache service prunes cold keys first
+        cache_key = 'home_entries:%s:%s' % (cursor, limit)
+        cached_data = memcache.get(cache_key)
+        if cached_data:
+            (entries, new_cursor) = cached_data
+        else:
+            q = db.Query(Entry).filter("hidden =", False).order("-published")
+            if cursor:
+                try:
+                    q.with_cursor(cursor)
+                except (db.BadRequestError, db.BadValueError):
+                    cursor = None
+            entries = q.fetch(limit=limit)
+            new_cursor = q.cursor() if len(entries) == limit else None
+            memcache.add(cache_key, (entries, new_cursor))
+        self.render("home.html", entries=entries, cursor=new_cursor)
 
 
 class AboutHandler(BaseHandler):
@@ -198,8 +209,6 @@ class ArchiveHandler(BaseHandler):
                 cursor = None
         limit = self.application.settings.get("num_archive", 10)
         entries = q.fetch(limit=limit)
-        if not cursor:
-            self.recent_entries = entries[:5]
         cursor = q.cursor() if len(entries) == limit else None
         self.render("archive.html", entries=entries, cursor=cursor)
 
@@ -245,6 +254,9 @@ class ComposeHandler(BaseHandler):
         entry.tags = tags
         entry.hidden = bool(self.get_argument("hidden", False))
         entry.put()
+        memcache.delete('home_entries:%s:%s' %
+          (None, self.application.settings.get("num_home", 5))
+        )
         if not key and not entry.hidden:
             self.ping()
         self.redirect("/" + entry.slug)
@@ -372,8 +384,11 @@ class EntrySmallModule(tornado.web.UIModule):
 
 class RecentEntriesModule(tornado.web.UIModule):
     def render(self):
-        entries = getattr(self.handler, "recent_entries", None)
-        if not entries:
+        cache_key = 'home_entries:%s:%s' % (None, 5)
+        cached_data = memcache.get(cache_key)
+        if cached_data:
+            (entries, new_cursor) = cached_data
+        else:
             q = db.Query(Entry).filter("hidden =", False).order("-published")
             entries = q.fetch(limit=5)
         return self.render_string("modules/recententries.html", entries=entries)
