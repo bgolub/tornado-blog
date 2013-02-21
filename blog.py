@@ -1,6 +1,7 @@
 import BeautifulSoup
 import functools
 import hashlib
+import json
 import os
 import re
 import tornado.web
@@ -9,8 +10,6 @@ import unicodedata
 import urllib
 import uuid
 import wsgiref.handlers
-
-from django.utils import simplejson as json
 
 from google.appengine.ext import db
 from google.appengine.api import memcache
@@ -405,6 +404,7 @@ class NavigationModule(tornado.web.UIModule):
 
 
 settings = {
+    "autoescape": None,
     "blog_author": "Benjamin Golub",
     "blog_title": "Benjamin Golub",
     "fb_admins": "15500414",
