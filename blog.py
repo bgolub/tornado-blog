@@ -349,13 +349,6 @@ class EntryModule(tornado.web.UIModule):
         return self.render_string("modules/entry.html", entry=entry,
             show_comments=show_comments)
 
-    def javascript_files(self):
-        if self.show_comments:
-            return ["http://connect.facebook.net/en_US/all.js#appId=" +
-              self.handler.application.settings["fb_app_id"] + "&xfbml=1"]
-        return None
-
-
 class MediaRSSModule(tornado.web.UIModule):
     def render(self, entry):
         soup = BeautifulSoup.BeautifulSoup(entry.body,
