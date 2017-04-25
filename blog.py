@@ -414,7 +414,7 @@ settings = {
     "xsrf_cookies": True,
 }
 
-application = tornado.wsgi.WSGIApplication([
+application = tornado.web.Application([
     (r"/", HomeHandler),
     (r"/about/?", AboutHandler),
     (r"/archive/?", ArchiveHandler),
@@ -427,8 +427,4 @@ application = tornado.wsgi.WSGIApplication([
     (r".*", CatchAllHandler),
 ], **settings)
 
-def main():
-    wsgiref.handlers.CGIHandler().run(application)
-
-if __name__ == "__main__":
-    main() 
+application = tornado.wsgi.WSGIAdapter(application)
